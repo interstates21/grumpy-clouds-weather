@@ -6,31 +6,37 @@ import {
 } from "react-navigation";
 import MapScreen from "./screens/MapScreen";
 import WeatherScreen from "./screens/WeatherScreen";
+import DetailedForecastScreen from "./screens/DetailedForecastScreen";
 import Icon from "react-native-vector-icons/FontAwesome";
+
+const MapNavigator = createStackNavigator({
+    MapStack: MapScreen,
+    DetailedForecastStack: DetailedForecastScreen
+});
 
 const MainNavigator = createBottomTabNavigator(
     {
-        Map: {
-            screen: MapScreen,
+        MapTab: {
+            screen: MapNavigator,
             navigationOptions: {
                 tabBarLabel: "Map",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name="globe" size={30} />
+                    <Icon color={tintColor} name="map" size={30} />
                 )
             }
         },
-        Weather: {
+        WeatherTab: {
             screen: WeatherScreen,
             navigationOptions: {
                 tabBarLabel: "Weather",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name="map-signs" size={30} />
+                    <Icon color={tintColor} name="sun-o" size={30} />
                 )
             }
         }
     },
     {
-        initialRouteName: "Map"
+        initialRouteName: "MapTab"
     }
 );
 
