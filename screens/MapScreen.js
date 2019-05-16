@@ -4,7 +4,6 @@ import MapView, {Marker} from "react-native-maps";
 import mapStyle from "../styles/mapStyle";
 import pinImage from "../images/grumpy.png";
 import axios from "axios";
-const key = "AIzaSyBqWt3_C3uBiXgTOuB_IcLaNd3DQuxwmxE";
 
 export default class MapScreen extends Component {
     state = {
