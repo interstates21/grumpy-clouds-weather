@@ -21,7 +21,7 @@ const MainNavigator = createBottomTabNavigator(
             navigationOptions: {
                 tabBarLabel: "Map",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name="map" size={30} />
+                    <Icon color={tintColor} name="map" size={20} />
                 )
             }
         },
@@ -30,13 +30,26 @@ const MainNavigator = createBottomTabNavigator(
             navigationOptions: {
                 tabBarLabel: "Weather",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name="sun-o" size={30} />
+                    <Icon color={tintColor} name="sun-o" size={20} />
                 )
             }
         }
     },
     {
-        initialRouteName: "MapTab"
+        initialRouteName: "MapTab",
+        tabBarOptions: {
+            inactiveTintColor: "#666",
+            activeTintColor: "crimson",
+            labelStyle: {
+                fontSize: 10,
+                paddingBottom: 2
+            },
+            tabStyle: {},
+            style: {
+                height: 50,
+                backgroundColor: "whitesmoke"
+            }
+        }
     }
 );
 

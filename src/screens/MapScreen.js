@@ -2,10 +2,21 @@ import React, {Component} from "react";
 import {View, Text, StyleSheet, Image} from "react-native";
 import MapView, {Marker} from "react-native-maps";
 import mapStyle from "../styles/mapStyle";
-import pinImage from "../images/grumpy.png";
+import pinImage from "../assets/grumpy.png";
 import axios from "axios";
+import {openWeatherMapKey} from "../api/keys";
 
 export default class MapScreen extends Component {
+    static navigationOptions = {
+        title: "GrumpyClouds",
+        headerStyle: {
+            backgroundColor: "#b01030"
+        },
+        headerTitleStyle: {
+            color: "#222",
+        }
+    };
+
     state = {
         region: {
             latitude: 50.45466,
@@ -26,9 +37,7 @@ export default class MapScreen extends Component {
         let description = "unknown";
         const url = `http://api.openweathermap.org/data/2.5/find?lat=${
             coordinate.latitude
-        }&lon=${
-            coordinate.longitude
-        }&cnt=1&apikey=d112634b1b8228c374336768437938f6`;
+        }&lon=${coordinate.longitude}&cnt=1&apikey=${openWeatherMapKey}`;
         axios
             .get(url)
             .then(res => {
@@ -58,7 +67,7 @@ export default class MapScreen extends Component {
                 customMapStyle={mapStyle}
                 loadingEnabled={true}
                 showsUserLocation={true}
-                maxZoomLevel={11}
+                maxZoomLevel={10}
                 minZoomLevel={9}
             >
                 {this.state.marker && (
@@ -70,7 +79,12 @@ export default class MapScreen extends Component {
                         coordinate={this.state.marker.coordinate}
                         description={this.state.marker.description}
                         image={pinImage}
-                        onCalloutPress={() => this.props.navigation.navigate('DetailedForecastStack')}
+                        onCalloutPress={() =>
+                            this.props.navigation.navigate(
+                                "DetailedForecastStack",
+                                {...this.state.marker}
+                            )
+                        }
                     />
                 )}
             </MapView>

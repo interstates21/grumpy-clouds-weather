@@ -5,23 +5,16 @@ import {
     ScrollView,
     StyleSheet,
     Dimensions,
+    TextInput,
     TouchableOpacity
 } from "react-native";
+import ForecastRow from "../components/ForecastRow";
 import Icon from "react-native-vector-icons/FontAwesome";
-import {TextInput} from "react-native-gesture-handler";
 import axios from "axios";
+import {googleKey, darkSkyKey} from "../api/keys";
 
-const googleKey = "AIzaSyBqWt3_C3uBiXgTOuB_IcLaNd3DQuxwmxE";
-const darkSkyKey = "28a32e4e38e1814625ce1749dd5ea29f";
-const {width, height} = Dimensions.get("window");
+const {width} = Dimensions.get("window");
 
-function ForecastRow({summary}) {
-    return (
-        <View style={styles.row}>
-            <Text>{summary}</Text>
-        </View>
-    );
-}
 export default class WeatherScreen extends Component {
     state = {
         query: "",
@@ -54,7 +47,7 @@ export default class WeatherScreen extends Component {
                 if (!cityResults) {
                     this.setState({
                         errorMsg:
-                            "Sorry, we don't know anything about your city:("
+                            "Sorry, we don't know anything about this place:("
                     });
                     return;
                 }
@@ -92,13 +85,17 @@ export default class WeatherScreen extends Component {
         const {query, data, errorMsg, forecast} = this.state;
         return (
             <View style={styles.container}>
-                <Text> WeatherScreen </Text>
+                {errorMsg != 0 && (
+                    <View style={styles.errorMsg}>
+                        <Text>{errorMsg}</Text>
+                    </View>
+                )}
                 <View style={styles.searchContainer}>
                     <TextInput
                         style={styles.searchInput}
                         value={query}
                         onChangeText={this._onChangeText}
-                        placeholder="search"
+                        placeholder="search weather by city"
                     />
                     <TouchableOpacity
                         onPress={this._onSubmit}
@@ -107,20 +104,15 @@ export default class WeatherScreen extends Component {
                         <Icon color="red" name="search" size={30} />
                     </TouchableOpacity>
                 </View>
-                <Text>{data.name}</Text>
-                {errorMsg != 0 && (
-                    <View style={styles.errorMsg}>
-                        <Text>{errorMsg}</Text>
-                    </View>
-                )}
-                {data.location && (
-                    <Text>
-                        {data.location.lat} = {data.location.lng}
-                    </Text>
-                )}
+                <Text style={styles.displayName}>{data.name}</Text>
                 <ScrollView>
                     {forecast.map(e => (
-                        <ForecastRow key={e.time} summary={e.summary} />
+                        <ForecastRow
+                            key={e.time}
+                            tempLow={parseInt(e.temperatureLow)}
+                            tempHigh={parseInt(e.temperatureHigh)}
+                            summary={e.summary}
+                        />
                     ))}
                 </ScrollView>
             </View>
@@ -134,26 +126,36 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "flex-start"
     },
-    row: {
-        padding: 30,
-        backgroundColor: "powderblue"
-    },
     searchContainer: {
-        flexDirection: "row"
+        flexDirection: "row",
+        height: 70,
+        width: width,
+        alignItems: "center",
+        justifyContent: "center"
     },
     searchInput: {
-        width: width - width / 6,
-        height: 70,
-        backgroundColor: "wheat"
+        width: width - width / 4,
+        backgroundColor: "crimson",
+        padding: 10,
+        margin: 5,
+        borderRadius: 15
     },
     searchSubmit: {
-        backgroundColor: "grey",
-        width: width / 6,
-        height: 70
+        color: "crimson",
+        width: width / 5,
+        margin: 5,
+        padding: 5
     },
     errorMsg: {
-        backgroundColor: "yellow",
+        backgroundColor: "#666",
+        alignItems: "center",
+        justifyContent: "center",
+        margin: 20,
+        padding: 10,
         width: width,
         height: 90
+    },
+    displayName: {
+        paddingBottom: 5,
     }
 });
