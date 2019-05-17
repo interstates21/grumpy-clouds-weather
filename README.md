@@ -4,8 +4,11 @@ List of API's used:
 - Google Geocoding
 - Dark Sky
 - Open Weather Maps
+
 < Awailable only in development mode. In order to try change a reference of MapScreen.js and DetailedForecastScreen
+
 - Geonames
+
 < Awailable only in development mode. In order to try change a reference of MapScreen.js
 
 <br>
