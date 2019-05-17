@@ -4,7 +4,9 @@ List of API's used:
 - Google Geocoding
 - Open Weather Maps
 - Dark Sky
+
 <br>
+
 ### Usage:
 About setting up an environment: <br> https://facebook.github.io/react-native/docs/getting-started.html
 ```
