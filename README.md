@@ -16,5 +16,8 @@ react-native run[android/ios]
 <br>
 
 ![Alt text](./screenshots/1.jpg)
+
+<br>
+
 ![Alt text](./screenshots/2.jpg)
 
