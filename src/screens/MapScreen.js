@@ -1,11 +1,13 @@
 import React, {Component} from "react";
-import {StyleSheet} from "react-native";
+import {StyleSheet, View, Dimensions, Text} from "react-native";
 import MapView, {Marker, Callout} from "react-native-maps";
-import CalloutView from '../components/CalloutView'
+import CalloutView from "../components/CalloutView";
 import mapStyle from "../styles/mapStyle";
 import pinImage from "../assets/grumpy.png";
 import axios from "axios";
 import {openWeatherMapKey} from "../api/keys";
+
+const {width} = Dimensions.get("window");
 
 export default class MapScreen extends Component {
     static navigationOptions = {
@@ -25,27 +27,32 @@ export default class MapScreen extends Component {
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121
         },
-        marker: null,
-        f: null
+        errorMsg: "",
+        msg: "",
+        marker: null
     };
 
-    _onRegionChange = region => {
+    _onRegionChange(region) {
         this.setState({region});
-    };
+    }
 
     _onMarkerPut = ({coordinate}) => {
         let name = "wonderland";
         let description = "unknown";
-        let temp = 0
+        let temp = 0;
+        // this.setState({msg:coordinate.latitude})
         const url = `http://api.openweathermap.org/data/2.5/find?lat=${
             coordinate.latitude
-        }&lon=${coordinate.longitude}&cnt=1&apikey=${openWeatherMapKey}&units=imperial`;
+        }&lon=${
+            coordinate.longitude
+        }&cnt=1&apikey=${openWeatherMapKey}&units=imperial`;
         axios
             .get(url)
             .then(res => {
                 name = res.data.list[0].name;
                 description = res.data.list[0].weather[0].main;
-                temp = res.data.list[0].main.temp
+                temp = res.data.list[0].main.temp;
+                // this.setState({errorMsg: `${name} ${description} ${temp}`})
                 const marker = {
                     name,
                     temp,
@@ -54,7 +61,7 @@ export default class MapScreen extends Component {
                 };
                 this.setState({marker});
             })
-            .catch(error => console.log(error));
+            .catch(err => this.setState({errorMsg: err}));
     };
 
     _hideCallout() {
@@ -64,46 +71,53 @@ export default class MapScreen extends Component {
     }
 
     render() {
-        const {marker, region} = this.state;
+        const {marker, region, errorMsg, msg} = this.state;
         return (
-            <MapView
-                style={styles.map}
-                region={region}
-                onRegionChange={e => this._onRegionChange(e.nativeEvent)}
-                onLongPress={e => {
-                    this._hideCallout();
-                    this._onMarkerPut(e.nativeEvent);
-                }}
-                customMapStyle={mapStyle}
-                loadingEnabled={true}
-                showsUserLocation={true}
-                maxZoomLevel={8}
-                minZoomLevel={7}
-            >
-                {marker ? (
-                    <Marker
-                        ref={ref => {
-                            this.marker = ref;
-                        }}
-                        coordinate={marker.coordinate}
-                        image={pinImage}
-                        onCalloutPress={() =>
-                            this.props.navigation.navigate(
-                                "DetailedForecastStack",
-                                {...marker}
-                            )
-                        }
-                    >
-                        <Callout>
-                            <CalloutView
-                                temp={parseInt(marker.temp)}
-                                title={marker.name}
-                                description={marker.description}
-                            />
-                        </Callout>
-                    </Marker>
-                ) : null}
-            </MapView>
+            <View style={{flex: 1}}>
+                {errorMsg != 0 && (
+                    <View style={styles.errorMsg}>
+                        <Text>{errorMsg}</Text>
+                    </View>
+                )}
+                <MapView
+                    style={styles.map}
+                    initialRegion={region}
+                    onRegionChange={region => this._onRegionChange(region)}
+                    onLongPress={e => {
+                        this._hideCallout();
+                        this._onMarkerPut(e.nativeEvent);
+                    }}
+                    customMapStyle={mapStyle}
+                    loadingEnabled={true}
+                    showsUserLocation={true}
+                    maxZoomLevel={8}
+                    minZoomLevel={7}
+                >
+                    {marker ? (
+                        <Marker
+                            ref={ref => {
+                                this.marker = ref;
+                            }}
+                            image={pinImage}
+                            coordinate={marker.coordinate}
+                            onCalloutPress={() =>
+                                this.props.navigation.navigate(
+                                    "DetailedForecastStack",
+                                    {...marker}
+                                )
+                            }
+                        >
+                            <Callout>
+                                <CalloutView
+                                    temp={parseInt(marker.temp)}
+                                    title={marker.name}
+                                    description={marker.description}
+                                />
+                            </Callout>
+                        </Marker>
+                    ) : null}
+                </MapView>
+            </View>
         );
     }
 }
@@ -113,5 +127,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center"
+    },
+    errorMsg: {
+        backgroundColor: "#666",
+        alignItems: "center",
+        justifyContent: "center",
+        margin: 20,
+        padding: 10,
+        width: width - 40,
+        height: 90
     }
 });
