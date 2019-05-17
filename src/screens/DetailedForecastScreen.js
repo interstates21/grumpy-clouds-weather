@@ -3,7 +3,6 @@ import {Text, View, StyleSheet, ScrollView, Dimensions} from "react-native";
 import ForecastRow from "../components/ForecastRow";
 import axios from "axios";
 import {darkSkyKey} from "../api/keys";
-import Icon from "react-native-vector-icons/FontAwesome";
 
 const {width} = Dimensions.get("window");
 
@@ -15,7 +14,7 @@ export default class DetailedForecastScreen extends Component {
 			  backgroundColor: "#b01030"
 		  },
 		  headerTitleStyle: {
-			  color: "#222"
+			  color: "#333"
 		  }
 		};
 	  };
@@ -47,15 +46,17 @@ export default class DetailedForecastScreen extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.displayInfo}>
-					Grumpy Forecast for the Whole Damn Week
+					Grumpy Forecast for the Whole Grumpy Week :#
                 </Text>
                 <ScrollView>
-                    {forecast.map(e => (
+                    {forecast.map((e, index) => (
                         <ForecastRow
                             key={e.time}
+                            time={e.time}
                             tempLow={parseInt(e.temperatureLow)}
                             tempHigh={parseInt(e.temperatureHigh)}
                             summary={e.summary}
+                            icon={e.icon}
                         />
                     ))}
                 </ScrollView>

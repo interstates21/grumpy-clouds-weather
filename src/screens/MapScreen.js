@@ -1,6 +1,7 @@
 import React, {Component} from "react";
-import {View, Text, StyleSheet, Image} from "react-native";
-import MapView, {Marker} from "react-native-maps";
+import {StyleSheet} from "react-native";
+import MapView, {Marker, Callout} from "react-native-maps";
+import CalloutView from '../components/CalloutView'
 import mapStyle from "../styles/mapStyle";
 import pinImage from "../assets/grumpy.png";
 import axios from "axios";
@@ -13,7 +14,7 @@ export default class MapScreen extends Component {
             backgroundColor: "#b01030"
         },
         headerTitleStyle: {
-            color: "#222",
+            color: "#333"
         }
     };
 
@@ -35,17 +36,19 @@ export default class MapScreen extends Component {
     _onMarkerPut = ({coordinate}) => {
         let name = "wonderland";
         let description = "unknown";
+        let temp = 0
         const url = `http://api.openweathermap.org/data/2.5/find?lat=${
             coordinate.latitude
-        }&lon=${coordinate.longitude}&cnt=1&apikey=${openWeatherMapKey}`;
+        }&lon=${coordinate.longitude}&cnt=1&apikey=${openWeatherMapKey}&units=imperial`;
         axios
             .get(url)
             .then(res => {
-                // console.log(res.data);
                 name = res.data.list[0].name;
-                description = res.data.list[0].weather[0].description;
+                description = res.data.list[0].weather[0].main;
+                temp = res.data.list[0].main.temp
                 const marker = {
                     name,
+                    temp,
                     coordinate,
                     description
                 };
@@ -54,39 +57,52 @@ export default class MapScreen extends Component {
             .catch(error => console.log(error));
     };
 
+    _hideCallout() {
+        if (this.marker) {
+            this.marker.hideCallout();
+        }
+    }
+
     render() {
-        const {f, region} = this.state;
+        const {marker, region} = this.state;
         return (
             <MapView
                 style={styles.map}
-                region={this.state.region}
+                region={region}
                 onRegionChange={e => this._onRegionChange(e.nativeEvent)}
-                onPress={e => {
+                onLongPress={e => {
+                    this._hideCallout();
                     this._onMarkerPut(e.nativeEvent);
                 }}
                 customMapStyle={mapStyle}
                 loadingEnabled={true}
                 showsUserLocation={true}
-                maxZoomLevel={10}
-                minZoomLevel={9}
+                maxZoomLevel={8}
+                minZoomLevel={7}
             >
-                {this.state.marker && (
+                {marker ? (
                     <Marker
-                        ref={_marker => {
-                            this.marker = _marker;
+                        ref={ref => {
+                            this.marker = ref;
                         }}
-                        title={this.state.marker.name}
-                        coordinate={this.state.marker.coordinate}
-                        description={this.state.marker.description}
+                        coordinate={marker.coordinate}
                         image={pinImage}
                         onCalloutPress={() =>
                             this.props.navigation.navigate(
                                 "DetailedForecastStack",
-                                {...this.state.marker}
+                                {...marker}
                             )
                         }
-                    />
-                )}
+                    >
+                        <Callout>
+                            <CalloutView
+                                temp={parseInt(marker.temp)}
+                                title={marker.name}
+                                description={marker.description}
+                            />
+                        </Callout>
+                    </Marker>
+                ) : null}
             </MapView>
         );
     }

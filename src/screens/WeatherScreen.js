@@ -109,9 +109,11 @@ export default class WeatherScreen extends Component {
                     {forecast.map(e => (
                         <ForecastRow
                             key={e.time}
+                            time={e.time}
                             tempLow={parseInt(e.temperatureLow)}
                             tempHigh={parseInt(e.temperatureHigh)}
                             summary={e.summary}
+                            icon={e.icon}
                         />
                     ))}
                 </ScrollView>

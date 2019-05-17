@@ -21,7 +21,7 @@ const MainNavigator = createBottomTabNavigator(
             navigationOptions: {
                 tabBarLabel: "Map",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name="map" size={20} />
+                    <Icon color={tintColor} name="map-marker" size={20} />
                 )
             }
         },
