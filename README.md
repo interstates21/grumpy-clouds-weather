@@ -5,7 +5,7 @@ List of API's used:
 - Dark Sky
 - Open Weather Maps
 
-> Awailable only in development mode. In order to try change a reference of MapScreen.js and DetailedForecastScreen
+> Awailable only in development mode. In order to try change a reference of MapScreen.js and DetailedForecastScreen.js
 
 - Geonames
 
