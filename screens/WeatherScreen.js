@@ -1,40 +1,85 @@
 import React, {Component} from "react";
-import {Text, View, StyleSheet, Dimensions} from "react-native";
+import {
+    Text,
+    View,
+    ScrollView,
+    StyleSheet,
+    Dimensions,
+    TouchableOpacity
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import {TextInput, TouchableOpacity} from "react-native-gesture-handler";
+import {TextInput} from "react-native-gesture-handler";
 import axios from "axios";
 
-const key = "AIzaSyBqWt3_C3uBiXgTOuB_IcLaNd3DQuxwmxE";
+const googleKey = "AIzaSyBqWt3_C3uBiXgTOuB_IcLaNd3DQuxwmxE";
+const darkSkyKey = "28a32e4e38e1814625ce1749dd5ea29f";
 const {width, height} = Dimensions.get("window");
 
+function ForecastRow({summary}) {
+    return (
+        <View style={styles.row}>
+            <Text>{summary}</Text>
+        </View>
+    );
+}
 export default class WeatherScreen extends Component {
     state = {
         query: "",
-        data: {}
+        data: {},
+        errorMsg: "",
+        forecast: []
     };
 
     _onSubmit = () => {
-				const {query} = this.state;
-				this.setState({query:{}})
-				console.log("Padasde!");
-        if (!(/[a-z]{3,}/i).test(query)) {
-            console.log("Please, enter a valid city name!");
+        const {query} = this.state;
+
+        this.setState({query: {}, errorMsg: ""});
+        if (!/[a-z]{3,}/i.test(query)) {
+            this.setState({errorMsg: "Please, enter a valid city name!"});
             return;
         }
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?components=locality:${query}&key=${key}`;
+        const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(
+            query
+        )}&components=locality:${encodeURI(query)}&key=${googleKey}`;
         axios
-            .get(url)
+            .get(geocodingUrl)
             .then(res => {
-                console.log(res.data);
                 const {results} = res.data;
+                const cityResults = results[0].address_components.filter(e =>
+                    e.types.includes("locality")
+                );
+                const countryResults = results[0].address_components.filter(e =>
+                    e.types.includes("country")
+                );
+                if (!cityResults) {
+                    this.setState({
+                        errorMsg:
+                            "Sorry, we don't know anything about your city:("
+                    });
+                    return;
+                }
+                const location = {...results[0].geometry.location};
                 this.setState({
                     data: {
-                        name: results[0].address_components[0].long_name,
-                        location: {...results[0].geometry.location}
+                        name: `${cityResults[0].long_name}, ${
+                            countryResults[0].short_name
+                        }`,
+                        location
                     }
                 });
+                const darkSkyUrl = `https://api.darksky.net/forecast/${darkSkyKey}/${
+                    location.lat
+                },${location.lng}`;
+                return axios.get(darkSkyUrl);
             })
-            .catch(error => console.log(error));
+            .then(res => {
+                const {daily} = res.data;
+                console.log(res.data);
+                this.setState({
+                    forecast: [...daily.data]
+                });
+            })
+            .catch(() => this.setState({errorMsg: "Request Failed:("}));
     };
 
     _onChangeText = value => {
@@ -44,7 +89,7 @@ export default class WeatherScreen extends Component {
     };
 
     render() {
-        const {query, data} = this.state;
+        const {query, data, errorMsg, forecast} = this.state;
         return (
             <View style={styles.container}>
                 <Text> WeatherScreen </Text>
@@ -63,6 +108,21 @@ export default class WeatherScreen extends Component {
                     </TouchableOpacity>
                 </View>
                 <Text>{data.name}</Text>
+                {errorMsg != 0 && (
+                    <View style={styles.errorMsg}>
+                        <Text>{errorMsg}</Text>
+                    </View>
+                )}
+                {data.location && (
+                    <Text>
+                        {data.location.lat} = {data.location.lng}
+                    </Text>
+                )}
+                <ScrollView>
+                    {forecast.map(e => (
+                        <ForecastRow key={e.time} summary={e.summary} />
+                    ))}
+                </ScrollView>
             </View>
         );
     }
@@ -82,13 +142,18 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     searchInput: {
-				width: width - width / 6,
-				height: 70,
-        backgroundColor: "wheat",
+        width: width - width / 6,
+        height: 70,
+        backgroundColor: "wheat"
     },
     searchSubmit: {
-			backgroundColor: 'grey',
-				width: width / 6,
-				height: 70,
+        backgroundColor: "grey",
+        width: width / 6,
+        height: 70
+    },
+    errorMsg: {
+        backgroundColor: "yellow",
+        width: width,
+        height: 90
     }
 });
