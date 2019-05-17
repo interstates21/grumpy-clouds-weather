@@ -21,7 +21,7 @@ const MainNavigator = createBottomTabNavigator(
             navigationOptions: {
                 tabBarLabel: "Map",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name="map-marker" size={20} />
+                    <Icon color={tintColor} name="map-marker" size={30} />
                 )
             }
         },
@@ -30,7 +30,7 @@ const MainNavigator = createBottomTabNavigator(
             navigationOptions: {
                 tabBarLabel: "Weather",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon color={tintColor} name="sun-o" size={20} />
+                    <Icon color={tintColor} name="sun-o" size={30} />
                 )
             }
         }

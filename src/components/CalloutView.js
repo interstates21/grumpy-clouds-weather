@@ -23,15 +23,19 @@ export default function CalloutView({title, description, temp}) {
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        paddingLeft: 30,
+        paddingRight: 30,
+        paddingBottom: 5,
+        textAlign: 'center'
     },
     firstRow: {
         flexDirection: "row"
     },
     secondRow: {
-		flexDirection: "row",
+		flexDirection: "column",
 		justifyContent: 'center',
-		alignItems: 'flex-end'
+        alignItems: 'center',
     },
     displayTemp: {
         color: "powderblue",

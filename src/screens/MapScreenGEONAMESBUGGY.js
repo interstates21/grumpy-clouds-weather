@@ -5,7 +5,7 @@ import CalloutView from "../components/CalloutView";
 import mapStyle from "../styles/mapStyle";
 import pinImage from "../assets/grumpy.png";
 import axios from "axios";
-import {googleKey, darkSkyKey} from "../api/keys";
+import {geonamesKey, darkSkyKey} from "../api/keys";
 
 const {width} = Dimensions.get("window");
 
@@ -37,26 +37,19 @@ export default class MapScreen extends Component {
     }
 
     _onMarkerPut = ({coordinate}) => {
-        let name = "Wasteland";
-        let description = "Scary";
+        let name = "wonderland";
+        let description = "unknown";
         let temp = 0;
         let weekData = [];
-        const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${
+        const geoNamesUrl = `http://api.geonames.org/findNearbyPlaceNameJSON?lat=${
             coordinate.latitude
-        },${coordinate.longitude}&key=${googleKey}`;
+        }&lng=${
+            coordinate.longitude
+        }&style=short&cities=cities15000&radius=30&maxRows=1&username=${geonamesKey}`;
         axios
-            .get(geocodingUrl)
+            .get(geoNamesUrl)
             .then(res => {
-                const {results} = res.data;
-                let cityResults = results[0].address_components.filter(e =>
-                    e.types.includes("locality")
-                );
-                if (!cityResults) {
-                    cityResults = results[0].address_components.filter(e =>
-                        e.types.includes("sublocality")
-                    );
-                }
-                name = cityResults[0].short_name;
+                name = res.data.geonames[0].name;
                 const darkSkyUrl = `https://api.darksky.net/forecast/${darkSkyKey}/${
                     coordinate.latitude
                 },${coordinate.longitude}`;

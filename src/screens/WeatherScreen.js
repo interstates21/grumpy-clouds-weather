@@ -67,7 +67,6 @@ export default class WeatherScreen extends Component {
             })
             .then(res => {
                 const {daily} = res.data;
-                console.log(res.data);
                 this.setState({
                     forecast: [...daily.data]
                 });
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         margin: 20,
         padding: 10,
-        width: width,
+        width: width - 40,
         height: 90
     },
     displayName: {

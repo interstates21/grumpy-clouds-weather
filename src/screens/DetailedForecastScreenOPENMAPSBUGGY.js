@@ -24,8 +24,21 @@ export default class DetailedForecastScreen extends Component {
     };
 
     componentDidMount() {
-        const {weekData} = this.props.navigation.state.params;
-        this.setState({forecast: [...weekData]})
+        const {coordinate} = this.props.navigation.state.params;
+        const url = `https://api.darksky.net/forecast/${darkSkyKey}/${
+            coordinate.latitude
+        },${coordinate.longitude}`;
+
+        axios
+            .get(url)
+            .then(res => {
+                const {daily} = res.data;
+                console.log(res.data);
+                this.setState({
+                    forecast: [...daily.data]
+                });
+            })
+            .catch(error => console.log(error));
     }
     render() {
         const {forecast} = this.state;

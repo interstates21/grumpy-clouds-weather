@@ -5,7 +5,7 @@ import CalloutView from "../components/CalloutView";
 import mapStyle from "../styles/mapStyle";
 import pinImage from "../assets/grumpy.png";
 import axios from "axios";
-import {googleKey, darkSkyKey} from "../api/keys";
+import {openWeatherMapKey} from "../api/keys";
 
 const {width} = Dimensions.get("window");
 
@@ -37,57 +37,31 @@ export default class MapScreen extends Component {
     }
 
     _onMarkerPut = ({coordinate}) => {
-        let name = "Wasteland";
-        let description = "Scary";
+        let name = "wonderland";
+        let description = "unknown";
         let temp = 0;
-        let weekData = [];
-        const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${
+        // this.setState({msg:coordinate.latitude})
+        const url = `api.openweathermap.org/data/2.5/find?lat=${
             coordinate.latitude
-        },${coordinate.longitude}&key=${googleKey}`;
+        }&lon=${
+            coordinate.longitude
+        }&cnt=1&apikey=${openWeatherMapKey}&units=imperial`;
         axios
-            .get(geocodingUrl)
+            .get(url)
             .then(res => {
-                const {results} = res.data;
-                let cityResults = results[0].address_components.filter(e =>
-                    e.types.includes("locality")
-                );
-                if (!cityResults) {
-                    cityResults = results[0].address_components.filter(e =>
-                        e.types.includes("sublocality")
-                    );
-                }
-                name = cityResults[0].short_name;
-                const darkSkyUrl = `https://api.darksky.net/forecast/${darkSkyKey}/${
-                    coordinate.latitude
-                },${coordinate.longitude}`;
-                return axios.get(darkSkyUrl);
+                name = res.data.list[0].name;
+                description = res.data.list[0].weather[0].main;
+                temp = res.data.list[0].main.temp;
+                // this.setState({errorMsg: `${name} ${description} ${temp}`})
+                const marker = {
+                    name,
+                    temp,
+                    coordinate,
+                    description
+                };
+                this.setState({marker});
             })
-            .then(res2 => {
-                const {currently, daily} = res2.data;
-                description = currently.summary;
-                temp = currently.temperature;
-                weekData = daily.data;
-                this.setState({
-                    marker: {
-                        name,
-                        temp,
-                        coordinate,
-                        description,
-                        weekData
-                    }
-                });
-            })
-            .catch(
-                this.setState({
-                    marker: {
-                        name,
-                        temp,
-                        coordinate,
-                        description,
-                        weekData
-                    }
-                })
-            );
+            .catch(err => this.setState({errorMsg: err}));
     };
 
     _hideCallout() {
