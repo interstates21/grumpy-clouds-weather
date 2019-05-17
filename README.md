@@ -1,4 +1,4 @@
-# Grumpy Clouds ☁️ ☁️ ☁️ React Native Minimalistic Weather Forecast
+# Grumpy Clouds ☁️ ☁️ ☁️ <br> React Native Minimalistic Weather Forecast
 ### List of API's used:
 - Google Geocoding
 - Dark Sky
