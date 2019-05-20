@@ -4,9 +4,9 @@ import {
     createAppContainer,
     createBottomTabNavigator
 } from "react-navigation";
-import MapScreen from "./screens/MapScreen";
+import MapScreen from "./screens/alternative-api-screens/openmaps-darksky/MapScreen";
 import WeatherScreen from "./screens/WeatherScreen";
-import DetailedForecastScreen from "./screens/DetailedForecastScreen";
+import DetailedForecastScreen from "./screens/alternative-api-screens/openmaps-darksky/DetailedForecastScreen";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const MapNavigator = createStackNavigator({

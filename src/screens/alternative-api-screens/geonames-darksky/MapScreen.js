@@ -1,11 +1,11 @@
 import React, {Component} from "react";
 import {StyleSheet, View, Dimensions, Text} from "react-native";
 import MapView, {Marker, Callout} from "react-native-maps";
-import CalloutView from "../components/CalloutView";
-import mapStyle from "../styles/mapStyle";
-import pinImage from "../assets/grumpy.png";
+import CalloutView from "../../../components/CalloutView";
+import mapStyle from "../../../styles/mapStyle";
+import pinImage from "../../../assets/grumpy.png";
 import axios from "axios";
-import {geonamesKey, darkSkyKey} from "../api/keys";
+import {geonamesKey, darkSkyKey} from "../../../api/keys";
 
 const {width} = Dimensions.get("window");
 

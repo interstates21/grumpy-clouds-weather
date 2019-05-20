@@ -1,8 +1,6 @@
 import React, {Component} from "react";
 import {Text, View, StyleSheet, ScrollView, Dimensions} from "react-native";
-import ForecastRow from "../components/ForecastRow";
-import axios from "axios";
-import {darkSkyKey} from "../api/keys";
+import ForecastRow from "../../../components/ForecastRow";
 
 const {width} = Dimensions.get("window");
 
@@ -24,21 +22,8 @@ export default class DetailedForecastScreen extends Component {
     };
 
     componentDidMount() {
-        const {coordinate} = this.props.navigation.state.params;
-        const url = `https://api.darksky.net/forecast/${darkSkyKey}/${
-            coordinate.latitude
-        },${coordinate.longitude}`;
-
-        axios
-            .get(url)
-            .then(res => {
-                const {daily} = res.data;
-                console.log(res.data);
-                this.setState({
-                    forecast: [...daily.data]
-                });
-            })
-            .catch(error => console.log(error));
+        const {weekData} = this.props.navigation.state.params;
+        this.setState({forecast: [...weekData]})
     }
     render() {
         const {forecast} = this.state;

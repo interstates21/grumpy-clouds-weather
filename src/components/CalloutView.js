@@ -1,9 +1,11 @@
 import React from "react";
-import {Text, View, StyleSheet} from "react-native";
+import {Text, View, StyleSheet, Dimensions} from "react-native";
 import convertToC from "../helpers/convertToCelsius";
 import PropTypes from "prop-types";
 import Icon from "react-native-vector-icons/FontAwesome";
 import getIconName from "../helpers/getIconName";
+
+const {width, height} = Dimensions.get("window")
 
 export default function CalloutView({title, description, temp}) {
     return (
@@ -22,10 +24,10 @@ export default function CalloutView({title, description, temp}) {
 
 const styles = StyleSheet.create({
     container: {
+        width: width /3,
+        height: height /6,
         alignItems: "center",
         justifyContent: "center",
-        paddingLeft: 30,
-        paddingRight: 30,
         paddingBottom: 5,
         textAlign: 'center'
     },
@@ -33,9 +35,7 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     secondRow: {
-		flexDirection: "column",
-		justifyContent: 'center',
-        alignItems: 'center',
+		flexDirection: "row",
     },
     displayTemp: {
         color: "powderblue",

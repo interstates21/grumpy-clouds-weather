@@ -1,8 +1,6 @@
 import React, {Component} from "react";
 import {Text, View, StyleSheet, ScrollView, Dimensions} from "react-native";
-import ForecastRow from "../components/ForecastRow";
-import axios from "axios";
-import {darkSkyKey} from "../api/keys";
+import ForecastRow from "../../../components/ForecastRow";
 
 const {width} = Dimensions.get("window");
 
