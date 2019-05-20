@@ -7,11 +7,12 @@ React Native Minimalistic Weather Forecast
 - Dark Sky
 - Open Weather Maps
 
-> Awailable only in development mode. In order to try, change a reference of MapScreen.js and DetailedForecastScreen.js
+> Awailable only in development mode.
 
 - Geonames
 
-> Awailable only in development mode. In order to try, change a reference of MapScreen.js
+> Awailable only in development mode.
+> In order to use an alternative api - import appropriate screens from alternative-api-screens folder instead of default import in App.js
 
 <br>
 
