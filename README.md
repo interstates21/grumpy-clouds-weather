@@ -12,6 +12,7 @@ React Native Minimalistic Weather Forecast
 - Geonames
 
 > Awailable only in development mode.
+<br>
 > In order to use an alternative api - import appropriate screens from alternative-api-screens folder instead of default import in App.js
 
 <br>
